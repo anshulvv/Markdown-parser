@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Browser
-import Element exposing (Element)
+import Element exposing (Element, column, fill, height, padding, paragraph, row, spacing, width)
 import Element.Background
 import Element.Border
 import Element.Font as Font
@@ -47,24 +47,32 @@ view : Model -> Browser.Document Msg
 view model =
     { title = "Title of the page"
     , body =
-        [ Element.layout []
-            (Element.column [ Element.width Element.fill ]
+        [ Element.layout [ height fill ]
+            (row
+                [ width fill
+                , height fill
+                , spacing 40
+                , padding 40
+                ]
                 [ Element.Input.multiline
-                    []
+                    [ width fill, height fill ]
                     { onChange = OnMarkdownChange
                     , text = model
                     , placeholder = Nothing
                     , label = Element.Input.labelHidden "Markdown Editor"
                     , spellcheck = False
                     }
-                , case viewMarkdown model of
-                    Ok rendered ->
-                        Element.column
-                            []
-                            rendered
+                , column
+                    [ width fill, height fill ]
+                    [ case viewMarkdown model of
+                        Ok rendered ->
+                            Element.column
+                                []
+                                rendered
 
-                    Err err ->
-                        Element.text <| err
+                        Err err ->
+                            Element.text <| err
+                    ]
                 ]
             )
         ]
@@ -176,6 +184,21 @@ elmUiRenderer =
     }
 
 
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
+
+
+
+{-
+   #########################################
+   ||                                     ||
+   ||       Markdown Components           ||
+   ||                                     ||
+   #########################################
+-}
+
+
 heading :
     { level : Markdown.Block.HeadingLevel
     , rawText : String
@@ -189,9 +212,13 @@ heading { level, rawText, children } =
                 Markdown.Block.H1 ->
                     30
 
+                Markdown.Block.H2 ->
+                    28
+
                 _ ->
-                    20
+                    25
             )
+        , Element.paddingEach (cPadding 0 45 0 0)
         ]
         children
 
@@ -229,6 +256,11 @@ codeBlock details =
         (Element.text details.body)
 
 
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.none
+cPadding :
+    Int
+    -> Int
+    -> Int
+    -> Int
+    -> { top : Int, bottom : Int, left : Int, right : Int }
+cPadding top bottom left right =
+    { top = top, bottom = bottom, left = left, right = right }
