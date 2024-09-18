@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Browser
-import Element exposing (Element, column, fill, height, padding, paragraph, row, spacing, width)
+import Element exposing (Element, column, el, fill, height, padding, paddingXY, paragraph, rgb255, row, spacing, spacingXY, width)
 import Element.Background
 import Element.Border
 import Element.Font as Font
@@ -67,7 +67,7 @@ view model =
                     [ case viewMarkdown model of
                         Ok rendered ->
                             Element.column
-                                []
+                                [ width fill ]
                                 rendered
 
                         Err err ->
@@ -97,7 +97,7 @@ elmUiRenderer =
     , paragraph =
         Element.paragraph
             [ Element.spacing 15 ]
-    , thematicBreak = Element.none
+    , thematicBreak = thematicBreak
     , text = Element.text
     , strong = \content -> Element.row [ Font.bold ] content
     , emphasis = \content -> Element.row [ Font.italic ] content
@@ -219,6 +219,7 @@ heading { level, rawText, children } =
                     25
             )
         , Element.paddingEach (cPadding 0 45 0 0)
+        , width fill
         ]
         children
 
@@ -254,6 +255,24 @@ codeBlock details =
             ]
         ]
         (Element.text details.body)
+
+
+thematicBreak : Element Msg
+thematicBreak =
+    let
+        line =
+            el
+                [ Element.Border.color (rgb255 200 200 200)
+                , Element.Border.width 1
+                , width fill
+                ]
+                Element.none
+    in
+    el
+        [ width fill
+        , paddingXY 0 30
+        ]
+        line
 
 
 cPadding :
