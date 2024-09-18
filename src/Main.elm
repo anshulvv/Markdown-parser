@@ -221,7 +221,7 @@ heading { level, rawText, children } =
         , Element.paddingEach (cPadding 0 45 0 0)
         , width fill
         ]
-        children
+        [ paragraph [] children ]
 
 
 code : String -> Element msg
